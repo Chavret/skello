@@ -1,0 +1,58 @@
+Programmation Générale
+
+1. Ecrire une regexp qui détecterait les nombres hexadécimaux dans un text
+‘0x0f4’, ‘0acdadecf822eeff32aca5830e438cb54aa722e3’, ‘8BADF00D’ devraient tous être détectés
+
+>/[\da-f]/
+
+2. Ci-dessous le pseudo-code d'une fonction récursive
+-  f(0) = 1;
+-  f(1) = 3;
+-  f(n)= 3 * f(n-1) - f(n-2);
+Implémentez la fonction f sans qu'elle soit récursive
+
+> 
+
+Ruby on Rails
+
+1. Quelles seraient les premières étapes à prendre pour refacto un projet où les controllers sont trop longs?
+
+> Se limiter aux actions standard index/show/new/create/edit/update/destroy
+
+2. Qu'est-ce que le N+1 et comment l'éviter en Rails?
+
+> Le n+1 problème est la multiplication des requêtes lorsqu’on appelle un modèle et au moins une de ces relations à plusieurs reprise et au même endroit.
+2 solutions selon les ressources disponible:
+  L’idéal: Eager Load 
+  Pour un nombre raisonnable de requêtes: Cache
+
+3. D'un point de vue pratique, quel intérêt à utiliser des constantes dans une app Rails? Quelles implémentations avez-vous vu/mis en place?
+
+> Les constantes permettent de stocker des données qui changent peu dans des modèles.
+EX: Pour dupliquer un Objet et ses relations on crée une constante dans le modèle concerné avec le nom des associations qu’il possède(sous forme de sym). Cela permet de construire ce service pour qu’il soit rapide et scalable à d’autre modèles en rajoutant simplement la constante au nouveau modèle. 
+
+4. Décrivez une fonction de Ruby trop peu utilisée à votre goût
+
+> L’inéritance et l’inéritance multiple qui peuvent remplacer des relations polymorphic dans certains cas
+EX: Nous avions chez Publidata des models Ville/Region.. qui n’avaient pas de colonne ‘name’ mais étaient lié par une relation polymorphic à un modèle Organization qui portait leur colonne ‘name’.
+
+Architecture
+
+1. Une entreprise veut créer un système de notification pour son site.
+Chaque type de notification a besoin de 'variables' différentes:
+(x a aimé le projet de y, le projet x vient d'être mis à jour, etc.)
+La base de données est en PostgreSQL.
+Proposez une structure de données et une implémentation en back-end qui permettrait d'être assez flexible
+tout en réduisant la possibilité de bugs et de structures non conformes
+
+> Pour faire ça il nous faut un nom pour l’action effectué, c’est pourquoi il doit y avoir une colonne ‘event’ dans Notification ex d’event: ‘like’, ‘dislike’, ‘update’, ‘schedule change’…
+Tout d’abord pour enregistrer les actions effectués je fait un tout petit service pour chaque événements namespacer dans Notification:: pour plus de clarté.
+Chaque service créé construit la colonne ‘message’ de Notification qui à pour type: jsonb
+De ce genre de manière {bold: ‘Richard’, translate: ‘a aimé le projet de’, bold: ‘Kevin’}
+On pourrait affiner d’avantage pour gérer le problème des pronoms changeants (’de’ vs ‘pour’ vs ‘avec’)
+
+2. Décrivez les objets et la structure de donnée que vous utiliseriez pour implémenter un jeu de Touché-Coulé
+
+> Modèle Partie contenant des paramètres comme la taille du jeu et quelques conditions spécifiques pour les règles ‘maison’.
+Lors de l’initialization d’une instance de Partie on créé les instances des modèles Joueur et Bateaux avec leur configurations respectives.
+On déroule la partie dans un service qui boucle tant qu’un des joueur n’a pas perdu ou quand un des joueurs n’a plus de coups a jouer(règle custom). 
