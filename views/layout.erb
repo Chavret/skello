@@ -5,9 +5,56 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="/style.css"/>
   </head>
   <body>
-    <%= yield %>
+    <header>
+      <div class="container">
+        <div class="row">
+          <div class="col-xs-12 text-center">
+            <h3>Liste des Posts</h3>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="row">
+        <% @posts.each do |post|%>
+          <div class="col-xs-12">
+            <div class="post-card well text-center">
+              <div class="head-card">
+                <div class="head-title">
+                  <%= post.title %>
+                  <div class="small-text"> publié le <%= post.created_at.strftime("%d/%m/%Y") %> à <%=post.created_at.strftime("%Hh%M") %></div>
+                </div>
+                <div class="head-votes">
+                  Note: <%=post.rate%>
+                  <a href="/post/<%=post.id%>/upvote" class="btn btn-success">Rate</a>
+                </div>
+              </div>
+
+              <div class="content well">
+                <p><%= post.content %></p>
+                <img src=<%= post.photo %> alt="Photo postée" />
+                <a href="/post/<%=post.id%>/random_image" class="btn btn-danger" style="margin-top: 10px;"> Changer !</a>
+              </div>
+              <%=post.photo%>
+              <% post.comments.each do |comment| %>
+                <div class="comment-card well">
+                  <%= comment.text %>
+                </div>
+              <% end %>
+              <h5>Commenter: </h5>
+              <form method="post" action="/post/<%=post.id%>/comments/create" method="post">
+                <input type="hidden" name="post_id" value=<%=post.id%> />
+                <input type="text" name="input" />
+                <input type="submit" value='commenter'/>
+              </form>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
   </body>
 </html>
